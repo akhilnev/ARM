@@ -1,0 +1,313 @@
+// PROGRAMMING ASSIGNMENT 1 : 
+// Team Members:
+// Akhilesh Nevatia - akhilnev 
+// Kausshik Manojkumar - kausshik 
+
+main:
+//SUBI SP , SP , #80 // Removes 80 bytes for 10 elements in the stack (chosen randomly)
+ADD X19 , XZR , XZR  // Saving where the array starts in X19
+ADDI X20 , XZR , #10 //-coding the value of the length of the array in X20 = 10
+
+//Calling Fill Method on the Array 
+SUBI SP , SP , #24
+STUR LR , [SP , #16]
+STUR X0 , [SP , #8]
+STUR X1 , [SP , #0]
+ADD X0 , XZR , X19 // Taking X0 = Array Start position 
+ADD X1 , XZR , X20 // Taking X1 = Length of the array 
+BL fill
+LDUR X1 , [SP , #0]
+LDUR X0 , [SP , #8]
+LDUR LR , [SP , #16]
+ADDI SP , SP , #24
+ 
+//Calling SELECTION SORT 
+SUBI SP , SP , #24
+STUR LR , [SP , #16]
+STUR X0 , [SP , #8]
+STUR X1 , [SP , #0]
+ADD X0 , XZR , X19 // Taking X0 = Array Start position 
+ADD X1 , XZR , X20 // Taking X1 = Length of the array 
+BL selection_sort
+LDUR X1 , [SP , #0]
+LDUR X0 , [SP , #8]
+LDUR LR , [SP , #16]
+ADDI SP , SP , #24
+
+//DUMP
+PRNL
+
+
+//CALLING BINARY SEARCH 1 
+
+SUBI SP, SP, #40
+STUR LR, [SP, #32]
+STUR X0, [SP, #24]
+STUR X1, [SP, #16]
+STUR X2, [SP, #8]
+STUR X3, [SP, #0]
+SUBI X2, X20, #1 // X2 = length-1
+ADD X1, XZR, XZR // x1 = 0
+ADD X3, XZR, XZR // x3 = 0
+BL binary_search
+PRNT X0 // should be 0
+LDUR X3, [SP, #0]
+LDUR X2, [SP, #8]
+LDUR X1, [SP, #16]
+LDUR X0, [SP, #24]
+LDUR LR, [SP, #32]
+ADDI SP, SP, #40
+
+
+PRNL
+
+// CALLING BINARY SEARCH 2 
+SUBI SP, SP, #40
+STUR LR, [SP, #32]
+STUR X0, [SP, #24]
+STUR X1, [SP, #16]
+STUR X2, [SP, #8]
+STUR X3, [SP, #0]
+SUBI X2, X20, #1 // X2 = length-1
+SUBI X3, X20, #1 // X3 = length-1
+ADD X1, XZR, XZR // x1 = 0
+BL binary_search
+PRNT X0 // should be 9
+LDUR X3, [SP, #0]
+LDUR X2, [SP, #8]
+LDUR X1, [SP, #16]
+LDUR X0, [SP, #24]
+LDUR LR, [SP, #32]
+ADDI SP, SP, #40
+
+PRNL
+
+//CALLING BINARY SEARCH 3
+SUBI SP, SP, #40
+STUR LR, [SP, #32]
+STUR X0, [SP, #24]
+STUR X1, [SP, #16]
+STUR X2, [SP, #8]
+STUR X3, [SP, #0]
+SUBI X2, X20, #1 // X2 = length-1
+LSR X3, X20, #1 // X3 = length/2
+ADD X1, XZR, XZR // x1 = 0
+BL binary_search
+PRNT X0 // should be 5
+LDUR X3, [SP, #0]
+LDUR X2, [SP, #8]
+LDUR X1, [SP, #16]
+LDUR X0, [SP, #24]
+LDUR LR, [SP, #32]
+ADDI SP, SP, #40
+
+PRNL
+
+//CALLING BINARY SEARCH 4
+
+SUBI SP, SP, #40
+STUR LR, [SP, #32]
+STUR X0, [SP, #24]
+STUR X1, [SP, #16]
+STUR X2, [SP, #8]
+STUR X3, [SP, #0]
+SUBI X2, X20, #1 // X2 = length-1
+ADD X3, X20, XZR // X3 = length
+ADD X1, XZR, XZR // x1 = 0
+BL binary_search
+PRNT X0 // should be -1
+LDUR X3, [SP, #0]
+LDUR X2, [SP, #8]
+LDUR X1, [SP, #16]
+LDUR X0, [SP, #24]
+LDUR LR, [SP, #32]
+ADDI SP, SP, #40
+
+BL End // Branches to end and dumps
+
+//WORKS
+fill:
+ADD X0, XZR, X19
+ADD X9, XZR, XZR // int I = 0
+fill_loop_body:
+SUBS X10, X1, X9 // X10 = n - i
+SUBI X10, X10, #1 // x10 = x10 - 1
+
+
+
+STUR X10, [X0, #0]
+ADDI X0, X0, #8
+
+
+ADDI X9, X9, #1
+SUBS XZR, X9, X1
+B.LT fill_loop_body
+ADD X9, XZR, XZR
+ADD X10, XZR, XZR
+ADD X19, XZR, X0
+ADD X19, XZR, XZR
+BR LR
+
+
+selection_sort:
+ORR X9, XZR, XZR // i =0 
+LOOP_SELECT:
+SUBS XZR, X9, X1
+B.GE END
+//FILL CODE HERE
+LSL X10 , X9 , #3 // X10 = i*8
+ADD X11 , X0 , X10 // X11 = a + i*8
+//LDUR X11 , [X0 , X10] // X11 = a[i]
+SUB X12 , X1 , X9 // X12 = n - i 
+SUBI SP , SP , #24
+STUR LR , [SP , #16]
+STUR X0 , [SP , #8]
+STUR X1 , [SP , #0] 
+ADD X0 , X11 , XZR
+ADD X1 , X12 , XZR
+BL find_min_idx
+PRNT X0 //GIVES MIN INDEX
+PRNT X9 // should be 0
+LSL X13, X0 , #3 // X13 = min_idx*8
+LDUR X1 , [SP , #0]
+LDUR X0 , [SP , #8]
+LDUR LR , [SP , #16]
+ADDI SP , SP , #24
+ADD X13 , X13 , X11 // X13 = a + i*8 + min_idx*8
+//CALLING SWAP 
+SUBI SP , SP , #24
+STUR LR , [SP , #16]
+STUR X0 , [SP , #8]
+STUR X1 , [SP , #0]
+ADD X0 , X11 , XZR // X0 = a + i*8
+ADD X1 , X13 , XZR // X1 = a + i*8 + min_idx*8
+BL swap 
+PRNT X9 // should be 0
+LDUR X1 , [SP , #0]
+LDUR X0 , [SP , #8]
+LDUR LR , [SP , #16]
+ADDI SP , SP , #24
+//INCREAMENTING i++
+ADDI X9, X9, #1
+PRNT X9 // should be 1
+B LOOP_SELECT
+//PRNT X9 // should be 1
+END:
+BR LR
+
+find_min_idx:
+//LOADING STACK 
+SUBI SP , SP , #32
+STUR X9 , [SP , #24]
+STUR X10 , [SP , #16]
+STUR X11 , [SP , #8]
+STUR X12 , [SP , #0]
+
+ADDI X9 , XZR , #1 // X9 = 1 = I
+ADD X10 , XZR , XZR // X10 = 0 = MIN
+LOOP_MIN:
+SUBS XZR , X9 , X1 
+B.GE End_min
+LSL X11 , X9 , #3 //X11 = i *8
+ADD X11 , X0 , X11 // X11 = BASE + i*8
+LSL X12 , X10 , #3 //X12= MIN *8
+ADD X12 , X0 , X12 // X12 = BASE + MIN*8
+LDUR X11 , [X11 , #0] // X11 = A[i]
+LDUR X12 , [X12 , #0] // X11 = A[MIN]
+SUBS XZR , X11 , X12 
+B.LT IF 
+ADDI X9 , X9 , #1 // i++
+B LOOP_MIN
+
+IF:
+ADD X10 , X9 , XZR // X10 = i 
+ADDI X9 , X9 , #1 // i++
+B LOOP_MIN
+
+End_min:
+ADD X0 , X10 , XZR 
+
+//RESTORING STACK 
+LDUR X12 , [SP , #0]
+LDUR X11 , [SP , #8]
+LDUR X10 , [SP , #16]
+LDUR X9 , [SP , #24]
+ADDI SP , SP , #32
+
+BR LR 
+
+
+swap:
+SUBI SP , SP , #16
+STUR X9 , [SP , #8] // Storing i value in Stack
+STUR X10 , [SP , #0]
+
+LDUR X9 , [X0 , #0] // X9 = XO base address
+LDUR X10 , [X1 , #0] // X10 = X1 base adress 
+STUR X10 , [X0 , #0] // X0 base adress = X10 
+STUR X9 , [X1 , #0]  // X1 base adress = X9 
+
+LDUR X10 , [SP , #0]
+LDUR X9 , [SP , #8] // Reloading X9 value to i
+ADDI SP , SP , #16
+
+BR LR 
+
+
+
+binary_search: 
+//X0 - Array address
+//X1 - Start index
+//X2 - End index 
+//X3 - Search Value
+
+// first if 
+SUBS XZR, X2, X1
+B.LT loop1
+
+
+ADD X9, X1, X2 // index = start + end
+LSR X9, X9, #1 // index / 2
+
+
+LSL X10, X9, #3 // index * 8
+
+ADD X0, X0, X10 //going to that index
+LDUR X11, [X0, #0] //x11 = a[index]
+SUB X0, X0, X10 //putting x0 back
+//ADD X10, XZR, XZR
+
+
+//second if
+SUBS X12, X11, X3
+CBZ X12, loop2
+
+//third if
+SUBS XZR, X3, X11
+B.LT loop3
+
+B loop4
+
+loop1:
+SUBI X0, XZR, #1
+B recursion_end
+
+loop2:
+ADD X0, XZR, XZR
+ADD X0, XZR, X9
+B recursion_end
+
+loop3:
+SUBI X2, X9, #1
+B binary_search
+
+loop4:
+ADDI X1, X9, #1
+B binary_search
+
+recursion_end:
+BR LR
+
+End:
+DUMP
+PRNL
